@@ -32,6 +32,15 @@ This project serves as a learning tool for understanding and implementing common
   - `UpdateFileObserver` implements the interface to handle notifications
   - `EventNotifier` (singleton) manages observers and notifies them of events
 
+### 4. Decorator Pattern
+- **Location**: `fileIO/Decorators` package
+- **Purpose**: Allows dynamic addition of responsibilities to file I/O operations (logging, compression, encryption, etc.) without modifying existing code
+- **Implementation**:
+  - `FileIODecorator` abstract class implements `IFileIOStratergy` and holds a reference to another `IFileIOStratergy`
+  - `LoggingFileIODecorator` adds logging functionality to file operations
+  - `CompressionFileIODecorator` adds compression/decompression functionality
+  - Decorators can be stacked: `new LoggingFileIODecorator(new CompressionFileIODecorator(new LocalFileIO()))`
+
 ## Project Structure
 
 ```
@@ -42,7 +51,11 @@ src/
 │   │   └── FileManager.java        # Main FileManager class (Strategy pattern)
 │   ├── fileIO/
 │   │   ├── IFileIOStratergy.java   # Strategy interface
-│   │   └── LocalFileIO.java        # Concrete strategy implementation
+│   │   ├── LocalFileIO.java        # Concrete strategy implementation
+│   │   ├── FileIODecorator.java    # Abstract decorator base class
+│   │   └── Decorators/
+│   │       ├── LoggingFileIODecorator.java     # Logging decorator
+│   │       └── CompressionFileIODecorator.java # Compression decorator
 │   └── Notification/
 │       ├── EventNotifier.java      # Singleton + Subject (Observer pattern)
 │       └── Observer/
@@ -97,6 +110,18 @@ EventNotifier.getInstance().addObserver(new UpdateFileObserver());
 // Perform file operations
 fileManager.upload("example.txt", "Hello World".getBytes());
 byte[] data = fileManager.download("example.txt");
+
+// Using Decorator Pattern to add features dynamically
+IFileIOStratergy decoratedIO = new LoggingFileIODecorator(
+    new CompressionFileIODecorator(
+        new LocalFileIO()
+    )
+);
+
+FileManager decoratedFileManager = new FileManager(decoratedIO);
+// Now file operations will be logged AND compressed!
+decoratedFileManager.upload("compressed_file.txt", "This data will be compressed".getBytes());
+byte[] decompressedData = decoratedFileManager.download("compressed_file.txt");
 ```
 
 ## Design Principles Demonstrated
