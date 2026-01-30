@@ -1,0 +1,7 @@
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/App.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/FileManager/FileManager.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/Notification/EventNotifier.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/Notification/Observer/IFileObserver.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/Notification/Observer/UpdateFileObserver.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/fileIO/IFileIOStratergy.java
+/home/wbtserver/IdeaProjects/fileManager/src/main/java/com/fileManager/fileIO/LocalFileIO.java
