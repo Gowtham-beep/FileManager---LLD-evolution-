@@ -41,6 +41,16 @@ This project serves as a learning tool for understanding and implementing common
   - `CompressionFileIODecorator` adds compression/decompression functionality
   - Decorators can be stacked: `new LoggingFileIODecorator(new CompressionFileIODecorator(new LocalFileIO()))`
 
+### 5. Factory Method Pattern
+- **Location**: `fileIO/factory` package
+- **Purpose**: Provides an interface for creating file I/O strategy objects, allowing subclasses to decide which class to instantiate
+- **Implementation**:
+  - `IFileIOFactory` interface defines the factory method `createFileIOStratergy()`
+  - `LocalFileIOFactory` creates `LocalFileIO` instances
+  - `LoggingFileIOFactory` creates `LoggingFileIODecorator` instances with proper decorator chaining
+  - `CompressionFileIODecoratorFactory` creates `CompressionFileIODecorator` instances
+  - `DecoratedFileIOFactory` creates fully decorated file I/O instances (compression + logging)
+
 ## Project Structure
 
 ```
@@ -56,6 +66,12 @@ src/
 │   │   └── Decorators/
 │   │       ├── LoggingFileIODecorator.java     # Logging decorator
 │   │       └── CompressionFileIODecorator.java # Compression decorator
+│   └── factory/
+│       ├── IFileIOFactory.java     # Factory Method interface
+│       ├── LocalFileIOFactory.java # Factory for LocalFileIO
+│       ├── LoggingFileIOFactory.java # Factory for LoggingFileIODecorator
+│       ├── CompressionFileIODecoratorFactory.java # Factory for CompressionFileIODecorator
+│       └── DecoratedFileIOFactory.java # Factory for decorated file I/O
 │   └── Notification/
 │       ├── EventNotifier.java      # Singleton + Subject (Observer pattern)
 │       └── Observer/
@@ -101,8 +117,10 @@ src/
 ## Usage Example
 
 ```java
-// Create a FileManager with LocalFileIO strategy
-FileManager fileManager = new FileManager(new LocalFileIO());
+// Create a FileManager using Factory Method pattern
+IFileIOFactory factory = new LocalFileIOFactory();
+IFileIOStratergy fileIO = factory.createFileIOStratergy();
+FileManager fileManager = new FileManager(fileIO);
 
 // Register an observer for notifications
 EventNotifier.getInstance().addObserver(new UpdateFileObserver());
@@ -111,17 +129,19 @@ EventNotifier.getInstance().addObserver(new UpdateFileObserver());
 fileManager.upload("example.txt", "Hello World".getBytes());
 byte[] data = fileManager.download("example.txt");
 
-// Using Decorator Pattern to add features dynamically
-IFileIOStratergy decoratedIO = new LoggingFileIODecorator(
-    new CompressionFileIODecorator(
-        new LocalFileIO()
-    )
-);
-
+// Using Decorator Pattern with Factory Method
+IFileIOFactory decoratedFactory = new DecoratedFileIOFactory();
+IFileIOStratergy decoratedIO = decoratedFactory.createFileIOStratergy();
 FileManager decoratedFileManager = new FileManager(decoratedIO);
+
 // Now file operations will be logged AND compressed!
 decoratedFileManager.upload("compressed_file.txt", "This data will be compressed".getBytes());
 byte[] decompressedData = decoratedFileManager.download("compressed_file.txt");
+
+// Alternative: Using individual factories
+IFileIOFactory loggingFactory = new LoggingFileIOFactory();
+IFileIOStratergy loggingIO = loggingFactory.createFileIOStratergy();
+FileManager loggingFileManager = new FileManager(loggingIO);
 ```
 
 ## Design Principles Demonstrated
@@ -130,6 +150,7 @@ byte[] decompressedData = decoratedFileManager.download("compressed_file.txt");
 - **Open/Closed Principle**: The system is open for extension (new strategies, observers) but closed for modification
 - **Dependency Inversion**: High-level modules (FileManager) don't depend on low-level modules (LocalFileIO), but both depend on abstractions (IFileIOStratergy)
 - **Composition over Inheritance**: Uses composition to achieve flexibility (Strategy pattern)
+- **Factory Method Pattern**: Encapsulates object creation, making the system more maintainable and extensible
 
 ## Future Enhancements
 
