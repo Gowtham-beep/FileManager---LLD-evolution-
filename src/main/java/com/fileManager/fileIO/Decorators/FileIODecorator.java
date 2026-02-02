@@ -1,4 +1,6 @@
-package com.fileManager.fileIO;
+package com.fileManager.fileIO.Decorators;
+
+import com.fileManager.fileIO.IFileIOStratergy;
 
 public abstract class FileIODecorator implements IFileIOStratergy{
     private IFileIOStratergy stratergy;

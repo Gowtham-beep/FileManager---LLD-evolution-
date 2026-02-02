@@ -1,6 +1,5 @@
 package com.fileManager.fileIO.Decorators;
 
-import com.fileManager.fileIO.FileIODecorator;
 import com.fileManager.fileIO.IFileIOStratergy;
 
 public class LoggingFileIODecorator extends FileIODecorator {
